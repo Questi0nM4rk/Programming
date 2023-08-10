@@ -1,0 +1,41 @@
+import json
+
+FILENAME = "thejs.json"
+
+dic ={
+        "name": "nam",
+        "subject": "subjec",
+        "creator": "creato",
+        "difficulty": "dificult",
+        "description": "dscriptio"
+    }
+
+def file_init():
+    with open(FILENAME, "w") as f:
+        pass
+
+    
+def write_to_file(content: dict):
+    Ljson = []
+    with open(FILENAME, "r") as f:
+        Ljson = json.load(f)
+    
+    Ljson.append(content)
+    
+    with open(FILENAME, "w") as f:
+        json.dump(Ljson, f, indent=4)
+
+
+def get_from_file(indx: str, get: str):
+    ret = []
+    with open(FILENAME, "r") as f:
+        data = json.load(f)
+        for d in data:
+            if d[indx] == get:
+                ret.append(d)
+    return ret
+
+
+t = get_from_file("name", "test")
+write_to_file(dic)
+print(t)
