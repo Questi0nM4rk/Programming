@@ -1,6 +1,6 @@
-# Introduction
+# My payment LIB - DLL
 
-## 1.2 Objective
+## Objective
 
 The aim of my thesis is to create a functional DLL library in C# for communicating with a payment terminal for credit card payments. This project was assigned to me at the company, and I am very satisfied with it. I have always been curious about how such a DLL library is written and what challenges I might face in the process. I plan to further enhance this library with functions that were not initially implemented. The library is designed for ease of use and can also be used in other programming languages, as I've enabled COM. The library will use bytes to transmit data between the user and the terminal, which is interesting as I've never done anything similar before. I have received documentation that I will follow. It contains information on how the terminal processes data, both directly and in what format it should be sent.
 
@@ -10,11 +10,11 @@ I intend to achieve this goal primarily by utilizing my existing skills, which I
 
 ## Object Design
 
-### 2.1 Terminal
+### Terminal
 
 The Terminal is the main non-static class in my library, where all the functions are implemented. These functions are further mapped to the IPayment interface, making them callable. All parameters sent to the terminal are handled through classes in an abstract class, allowing for pre-use validation.
 
-### 2.2 Methods
+## Methods
 
 - `private bool msg_write(NetworkStream networkStream, byte[] Msg)` – attempts to send a message to the terminal.
 
@@ -79,3 +79,30 @@ Validator function in FieldListBase iterates through the parameters to check if 
 - `s_VariableSymbol – N, 1–10`
 - `y_SpecificSymbol – N, 1–10`
 
+## Communication with the Terminal
+
+Communication with the terminal was initially challenging as I had no understanding of bytes, which are used for terminal communication. I received documentation that defined the purpose of various bytes and their quantities for different scenarios. The terminal itself offers numerous options for different messages, ranging from basic card payments, refunds, and payment cancellations to handshakes and pre-authorized payments. Each of these scenarios has distinct parameters and terminal responses.
+
+### Example SALE – Basic Payment
+
+#### Header
+
+The message header must include the message type, message flag, and message counter. In this case, the message type is a request (byte 01), the flag is reserved for future messages (0000), and the counter indicates the message number (0000).
+
+#### Data
+
+The next step is to create the actual message data. Data also has its header, with default values often specified in the documentation. One of the most important parameters in the data is the transaction ID, which determines the type of service. In this case, it's Card_Service (76). Following that is a value indicating the type of message, where SALE is represented by the letter P. The next parameter is the currency code, which needs conversion from global codes to terminal-specific codes because the terminal uses its own codes. We then include the payment amount, which requires careful handling. If the amount is a whole number, two zeros are added at the end. If the amount includes decimals, a comma is used to separate the decimal part. There are many optional parameters and additional aspects to consider, but these are the fundamental basics.
+
+#### Sending
+
+Once the message is constructed, it needs to be sent to the terminal. This involves converting the message into bytes and sending it to the terminal using the TCP protocol. We then wait for a response from the terminal to determine the outcome of the payment, allowing us to return a specific code and message.
+
+## RESUMÉ
+
+The goal of my work was to create a functional DLL Library in C# to communicate with a payment terminal for credit card payments. This project was assigned to me in the company, and I am very satisfied with it. I have always wondered how such a DLL library is written and what challenges it presents throughout the process.
+
+My intention is to further expand this library to include functions that were not initially part of the scope. The library itself is designed to be user-friendly and versatile, making it suitable for integration into various programming languages with the inclusion of COM. The library facilitates data transmission between users and the terminal, which was a fascinating aspect since I had never worked on something similar before.
+
+Each stage of this project has contributed significantly to my wealth of experience and skills, empowering me for future library and program development to meet client needs. It has also deepened my understanding of C# programming and communication at the byte level. In the future, I aspire to complete this project or embark on other projects focusing on byte-level communication between clients and servers.
+
+If I were to continue this work, I would encompass the incorporation of various payment methods and additional message types. I would develop a custom graphical user interface (GUI) for the library and optimize it by implementing asynchronous functions while ensuring a user-friendly interface to access classes and functions.
