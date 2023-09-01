@@ -36,8 +36,7 @@ namespace Payment
         // IP - ip of terminal (server)
         // ECR - ip of client
 
-        private static string file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LOG.txt";
-
+        private static string file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LOG.log";
         private static TcpClient tcpClient = new TcpClient();
         private static int TIMEOUT = 1_500; // 1,5s
         private static int NUM = 0;
