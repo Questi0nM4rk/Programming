@@ -165,16 +165,20 @@ namespace Payment
 
                             string card_num4 = "";
                             string id_uctenka = "";
+                            string auth_code = "";
+                            string tid = "";
 
                             if (splitted.Length > 30)
                             {
                                 id_uctenka = splitted[39];
                                 card_num4 = splitted[0];
                                 card_num4 = card_num4.Substring(card_num4.IndexOf("******") + 6, 4);
+                                auth_code = splitted[10].Split(' ')[1];
+                                tid = splitted[3];
                             }
 
                             passed = CheckAnswer(String.Join("", ToMSG(checkByte)), out code1);
-                            code += code1 + ":" + (id_uctenka) + ":" + card_num4;
+                            code += code1 + ":" + id_uctenka + ":" + card_num4 + ":" + tid + ":" + auth_code;
                         }
                         else
                         {
