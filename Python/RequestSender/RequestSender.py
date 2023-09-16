@@ -79,10 +79,8 @@ class bot:
         while datetime.now() <= end_time:
             print("while")
             for _ in range(self.count):
-                #response = requests.get(self.url, cookies=self.cookies_to_dict())
-                #print(f"Response status code: {response.status_code}")
-                print(datetime.now())
-                print("Request sent!")
+                response = requests.get(self.url, cookies=self.cookies_to_dict())
+                print(f"Response status code: {response.status_code}")
             
             time.sleep(1)
 
