@@ -1,6 +1,7 @@
 import argparse
 import requests
 from datetime import datetime, timedelta
+import time
 
 from enum import Enum
 
@@ -36,18 +37,12 @@ class Bot:
     
     def cookies_dict(self) -> dict[str, str]:
         
-        ret_dict = {}
-        
-        for item in self.cookies:
-            for key, value in item:
-                ret_dict[key] = value
-        
-        return ret_dict
+        return self.cookies[0]
     
     
-    def send_requests(self, url, time, count, seconds) -> None:
+    def send_requests(self, url, when, count, seconds) -> None:
         
-        self.start_time = datetime.strptime(time, "%d/%m/%Y-%H:%M:%S")
+        self.start_time = datetime.strptime(when, "%d/%m/%Y-%H:%M:%S")
         self.end_time = self.start_time + timedelta(seconds=seconds)
         
         current_time = datetime.now()
@@ -107,6 +102,8 @@ class Chrome:
         submit_button.click()
         
         self.client.cookies = self.driver.get_cookies()
+        
+        print(self.client.cookies)
         
         self.driver.quit()
         
