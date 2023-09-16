@@ -17,6 +17,7 @@ PASSWORD = getenv("PASSWORD")
 
 LOGIN_URL = getenv("LOGIN_URL")
 
+VISIBLE = False         # if the chrome should be visible, user primary for testing
     
 class Bot:
     cookies: list[dict[str, str]]
@@ -90,7 +91,7 @@ class Chrome:
         self.client = Bot()
         
         
-    def login(self, url, username, password):
+    def login(self, url, username, password) -> None:
         self.driver.get(url)
         
         username_field = self.driver.find_element(By.NAME, "credential_0")        
@@ -107,7 +108,7 @@ class Chrome:
         self.driver.quit()
         
     
-    def send_request(self, url, count, time, seconds):
+    def send_request(self, url, count, time, seconds) -> None:
         
         if seconds > 20 or count > 50:
             return
@@ -124,7 +125,7 @@ def main():
     parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
     args = parser.parse_args()
     
-    google = Chrome(False)
+    google = Chrome(VISIBLE)
     
     google.login(LOGIN_URL, USERNAME, PASSWORD)
     google.send_request(args.url, args.count, args.time, args.seconds)
