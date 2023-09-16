@@ -22,10 +22,13 @@ class Bot:
     start_time: datetime
     end_time: datetime
     time_to_wait: float
-
+    
+    keep_alive: datetime
+    
     
     def __init__(self) -> None:
         self.cookies = []
+        self.keep_alive = datetime.now() + timedelta(minutes=1)
         
     
     def cookies_dict(self) -> dict[str, str]:
@@ -44,6 +47,8 @@ class Bot:
         self.start_time = datetime.strptime(time, "%d/%m/%Y-%H:%M:%S")
         self.end_time = self.start_time + timedelta(seconds=seconds)
 
+        self.keep_alive = self.end_time + timedelta(minutes=1)
+        
         current_time = datetime.now()
         time_to_wait = (self.start_time - current_time).total_seconds()
         time_to_wait -= 2
@@ -75,7 +80,7 @@ class Chrome:
     client    
     """
 
-    def __init__(self, invis: bool, bot: Bot) -> None:
+    def __init__(self, invis: bool) -> None:
 
         if invis:
             self.chrome_options = Options().add_argument("--headless")
@@ -86,7 +91,7 @@ class Chrome:
             self.chrome_options = None
             self.driver = webdriver.Chrome()
             
-        self.client = bot
+        self.client = Bot()
         
         
     def login(self, url, username, password):
@@ -106,9 +111,12 @@ class Chrome:
         self.driver.quit()
         
     
-    def send_request(self):
+    def send_request(self, url, count, time, seconds):
         
-        self.client.send_requests()
+        if seconds > 20 or count > 50:
+            return
+        
+        self.client.send_requests(url, time, count, seconds)
         
         
         
@@ -122,7 +130,9 @@ def main():
     parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
     args = parser.parse_args()
     
-    bot = Bot()
+    google = Chrome(False)
+    
+    google.send_request(args.url, args.count, args.time, args.seconds)
     
 
 
