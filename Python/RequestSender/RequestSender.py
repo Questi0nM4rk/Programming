@@ -61,13 +61,12 @@ class Bot:
             time.sleep(0.2)
         
         while datetime.now() <= self.end_time:
-            print("while")
             if self.cookies:
                 for _ in range(count):
                     response = requests.get(url, cookies=self.cookies_dict())
-                    print(response.content)
+                    print(url)
             
-            time.sleep(1)
+            time.sleep(0.99)
 
 
 class Chrome:
