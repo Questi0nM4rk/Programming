@@ -15,14 +15,6 @@ load_dotenv()
 USERNAME = getenv("USERNAME")
 PASSWORD = getenv("PASSWORD")
 
-class Cookie:
-    name: str
-    value: str
-
-    def __init__(self, name: str, value: str) -> None:
-        self.name = name
-        self.value = value
-        
     
 class Bot:
     cookies: list[dict[str, str]]
