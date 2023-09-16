@@ -18,23 +18,17 @@ PASSWORD = getenv("PASSWORD")
     
 class Bot:
     cookies: list[dict[str, str]]
-    url: str
-    time: str
-    end_time: int
-    count: int
-    seconds: int
+    
+    start_time: datetime
+    end_time: datetime
     time_to_wait: float
 
     
-    def __init__(self, url, time, count, seconds) -> None:
-        self.url = url
-        self.time = time
-        self.count = count
-        self.seconds = seconds
+    def __init__(self) -> None:
         self.cookies = []
         
     
-    def cookies_dict(self):
+    def cookies_dict(self) -> dict[str, str]:
         
         ret_dict = {}
         
@@ -45,30 +39,30 @@ class Bot:
         return ret_dict
     
     
-    def send_requests(self):
+    def send_requests(self, url, time, count, seconds) -> None:
         
-        start_time = datetime.strptime(self.time, "%d/%m/%Y-%H:%M:%S")
-        end_time = start_time + timedelta(seconds=self.seconds)
+        self.start_time = datetime.strptime(time, "%d/%m/%Y-%H:%M:%S")
+        self.end_time = self.start_time + timedelta(seconds=seconds)
 
         current_time = datetime.now()
-        self.time_to_wait = (start_time - current_time).total_seconds()
-        self.time_to_wait -= 2
+        time_to_wait = (self.start_time - current_time).total_seconds()
+        time_to_wait -= 2
 
-        if self.time_to_wait > 0:
-            print(f"Waiting {self.time_to_wait:.2f} seconds until the specified start time.")
-            time.sleep(self.time_to_wait)
+        if time_to_wait > 0:
+            print(f"Waiting {time_to_wait:.2f} seconds until the specified start time.")
+            time.sleep(time_to_wait)
         
-        print(start_time)
-        print(end_time)
+        print(self.start_time)
+        print(self.end_time)
         
-        while datetime.now() < start_time:
+        while datetime.now() < self.start_time:
             time.sleep(0.2)
         
-        while datetime.now() <= end_time:
+        while datetime.now() <= self.end_time:
             print("while")
             if self.cookies:
-                for _ in range(self.count):
-                    response = requests.get(self.url, cookies=self.cookies_dict())
+                for _ in range(count):
+                    response = requests.get(url, cookies=self.cookies_dict())
                     print(response.content)
             
             time.sleep(1)
@@ -111,6 +105,13 @@ class Chrome:
         
         self.driver.quit()
         
+    
+    def send_request(self):
+        
+        self.client.send_requests()
+        
+        
+        
         
         
 def main():
@@ -121,7 +122,7 @@ def main():
     parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
     args = parser.parse_args()
     
-    bot = Bot(args.url, args.time, args.count, args.seconds)
+    bot = Bot()
     
 
 
