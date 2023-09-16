@@ -15,6 +15,8 @@ load_dotenv()
 USERNAME = getenv("USERNAME")
 PASSWORD = getenv("PASSWORD")
 
+LOGIN_URL = getenv("LOGIN_URL")
+
     
 class Bot:
     cookies: list[dict[str, str]]
@@ -115,8 +117,6 @@ class Chrome:
         
         
         
-        
-        
 def main():
     parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
     parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
@@ -127,6 +127,7 @@ def main():
     
     google = Chrome(False)
     
+    google.login()
     google.send_request(args.url, args.count, args.time, args.seconds)
     
 
