@@ -23,12 +23,9 @@ class Bot:
     end_time: datetime
     time_to_wait: float
     
-    keep_alive: datetime
-    
     
     def __init__(self) -> None:
         self.cookies = []
-        self.keep_alive = datetime.now() + timedelta(minutes=1)
         
     
     def cookies_dict(self) -> dict[str, str]:
@@ -46,8 +43,6 @@ class Bot:
         
         self.start_time = datetime.strptime(time, "%d/%m/%Y-%H:%M:%S")
         self.end_time = self.start_time + timedelta(seconds=seconds)
-
-        self.keep_alive = self.end_time + timedelta(minutes=1)
         
         current_time = datetime.now()
         time_to_wait = (self.start_time - current_time).total_seconds()
@@ -72,7 +67,7 @@ class Bot:
             
             time.sleep(1)
 
-    
+
 class Chrome:
     """
     driver
