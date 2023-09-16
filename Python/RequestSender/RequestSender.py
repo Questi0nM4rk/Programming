@@ -2,10 +2,13 @@ import argparse
 import requests
 import time
 from datetime import datetime, timedelta
+
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
-
-class cookie:
+class Cookie:
     name: str
     value: str
 
@@ -14,8 +17,8 @@ class cookie:
         self.value = value
         
     
-class bot:
-    cookies: list[cookie]
+class Bot:
+    cookies: list[Cookie]
     url: str
     time: str
     end_time: int
@@ -29,6 +32,7 @@ class bot:
         self.time = time
         self.count = count
         self.seconds = seconds
+        self.cookies = []
         
         self.get_cookies()
         self.send_requests()
@@ -48,11 +52,12 @@ class bot:
         input()
         
         cookies = driver.get_cookies()
+        
         for cooki in cookies:
             print(f"Cookie Name: {cooki['name']}")
             print(f"Cookie Value: {cooki['value']}")
 
-            self.cookies.append(cookie(cooki['name'], cooki['value']))
+            self.cookies.append(Cookie(cooki['name'], cooki['value']))
         
         driver.quit()
         
@@ -80,11 +85,46 @@ class bot:
             print("while")
             for _ in range(self.count):
                 response = requests.get(self.url, cookies=self.cookies_to_dict())
-                print(f"Response status code: {response.status_code}")
+                print(response.content)
             
             time.sleep(1)
 
+    
+class Chrome:
+    """
+    driver
+    options
+    client    
+    """
 
+    def __init__(self, invis: bool, bot: Bot) -> None:
+
+        if invis:
+            self.chrome_options = Options().add_argument("--headless")
+            if self.chrome_options:
+                self.driver = webdriver.Chrome(options=self.chrome_options)
+            
+        else:
+            self.chrome_options = None
+            self.driver = webdriver.Chrome()
+            
+        self.client = bot
+        
+        
+    def login(self, url, username, password):
+        self.driver.get(url)
+        
+        username_field = self.driver.find_element(By.NAME, "credential_0")        
+        password_field = self.driver.find_element(By.NAME, "credential_1")        
+        submit_button = self.driver.find_element(By.XPATH, '//button[@type="submit"]')
+        
+        username_field.send_keys(username)
+        password_field.send_keys(password)
+        
+        submit_button.click()
+        
+        
+        
 def main():
     parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
     parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
@@ -93,7 +133,7 @@ def main():
     parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
     args = parser.parse_args()
     
-    Bot = bot(args.url, args.time, args.count, args.seconds)
+    bot = Bot(args.url, args.time, args.count, args.seconds)
     
 
 
