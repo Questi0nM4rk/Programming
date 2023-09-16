@@ -127,7 +127,7 @@ def main():
     
     google = Chrome(False)
     
-    google.login()
+    google.login(LOGIN_URL, USERNAME, PASSWORD)
     google.send_request(args.url, args.count, args.time, args.seconds)
     
 
