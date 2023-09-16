@@ -8,6 +8,13 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
+USERNAME = getenv("USERNAME")
+PASSWORD = getenv("PASSWORD")
+
 class Cookie:
     name: str
     value: str
@@ -18,7 +25,7 @@ class Cookie:
         
     
 class Bot:
-    cookies: list[Cookie]
+    cookies: list[dict[str, str]]
     url: str
     time: str
     end_time: int
@@ -34,33 +41,17 @@ class Bot:
         self.seconds = seconds
         self.cookies = []
         
-        self.get_cookies()
-        self.send_requests()
     
-    def cookies_to_dict(self):
-        cookies_dict = {}
-        for cookie in self.cookies:
-            cookies_dict[cookie.name] = cookie.value
-        return cookies_dict    
+    def cookies_dict(self):
+        
+        ret_dict = {}
+        
+        for item in self.cookies:
+            for key, value in item:
+                ret_dict[key] = value
+        
+        return ret_dict
     
-    
-    def get_cookies(self):
-        driver = webdriver.Chrome()
-
-        driver.get('https://muni.islogin.cz/login/-dkNKkBh2fmbeAwUJOEKNfhG?lang=en')
-
-        input()
-        
-        cookies = driver.get_cookies()
-        
-        for cooki in cookies:
-            print(f"Cookie Name: {cooki['name']}")
-            print(f"Cookie Value: {cooki['value']}")
-
-            self.cookies.append(Cookie(cooki['name'], cooki['value']))
-        
-        driver.quit()
-        
     
     def send_requests(self):
         
@@ -83,9 +74,10 @@ class Bot:
         
         while datetime.now() <= end_time:
             print("while")
-            for _ in range(self.count):
-                response = requests.get(self.url, cookies=self.cookies_to_dict())
-                print(response.content)
+            if self.cookies:
+                for _ in range(self.count):
+                    response = requests.get(self.url, cookies=self.cookies_dict())
+                    print(response.content)
             
             time.sleep(1)
 
@@ -122,6 +114,10 @@ class Chrome:
         password_field.send_keys(password)
         
         submit_button.click()
+        
+        self.client.cookies = self.driver.get_cookies()
+        
+        self.driver.quit()
         
         
         
