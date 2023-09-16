@@ -1,7 +1,7 @@
 import argparse
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from selenium import webdriver
 
 
@@ -21,6 +21,7 @@ class bot:
     end_time: int
     count: int
     seconds: int
+    time_to_wait: float
 
     
     def __init__(self, url, time, count, seconds) -> None:
@@ -28,8 +29,9 @@ class bot:
         self.time = time
         self.count = count
         self.seconds = seconds
-        self.end_time
-    
+        
+        self.get_cookies()
+        self.send_requests()
     
     def cookies_to_dict(self):
         cookies_dict = {}
@@ -39,91 +41,62 @@ class bot:
     
     
     def get_cookies(self):
-        # Create a new Chrome browser instance
-        driver = webdriver.Chrome()  # Replace with the path to your chromedriver executable
+        driver = webdriver.Chrome()
 
-        # Navigate to the website and log in manually
         driver.get('https://muni.islogin.cz/login/-dkNKkBh2fmbeAwUJOEKNfhG?lang=en')
 
         input()
-
-        # After manually logging in, you can retrieve the cookies
+        
         cookies = driver.get_cookies()
-        for cookie in cookies:
-            print(f"Cookie Name: {cookie['name']}")
-            print(f"Cookie Value: {cookie['value']}")
+        for cooki in cookies:
+            print(f"Cookie Name: {cooki['name']}")
+            print(f"Cookie Value: {cooki['value']}")
 
-        # Close the browser
+            self.cookies.append(cookie(cooki['name'], cooki['value']))
+        
         driver.quit()
         
     
     def send_requests(self):
-        # Convert the provided start time to a datetime object
+        
         start_time = datetime.strptime(self.time, "%d/%m/%Y-%H:%M:%S")
+        end_time = start_time + timedelta(seconds=self.seconds)
 
-        # Calculate the time to wait before sending requests
         current_time = datetime.now()
-        time_to_wait = (start_time - current_time).total_seconds()
+        self.time_to_wait = (start_time - current_time).total_seconds()
+        self.time_to_wait -= 2
 
-        if time_to_wait > 0:
-            print(f"Waiting {time_to_wait:.2f} seconds until the specified start time.")
-            time.sleep(time_to_wait)
-
-        # Calculate end time
-        end_time = time.time() + self.seconds
-
-        # Send requests for the specified duration
-        while time.time() < end_time:
+        if self.time_to_wait > 0:
+            print(f"Waiting {self.time_to_wait:.2f} seconds until the specified start time.")
+            time.sleep(self.time_to_wait)
+        
+        print(start_time)
+        print(end_time)
+        
+        while datetime.now() < start_time:
+            time.sleep(0.2)
+        
+        while datetime.now() <= end_time:
+            print("while")
             for _ in range(self.count):
                 #response = requests.get(self.url, cookies=self.cookies_to_dict())
                 #print(f"Response status code: {response.status_code}")
+                print(datetime.now())
                 print("Request sent!")
             
-            # Sleep for 1 second
             time.sleep(1)
-
-
-    def parser(self):
-        # Parse command-line arguments
-        parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
-        parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
-        parser.add_argument("-c", "--count", required=True, type=int, help="Number of requests per second")
-        parser.add_argument("-t", "--time", required=True, help="Start time in the format '31/8/2023-20:23:36'")
-        parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
-        args = parser.parse_args()
-
-        # Convert the provided start time to a datetime object
-        start_time = datetime.strptime(args.time, "%d/%m/%Y-%H:%M:%S")
-
-        # Calculate the time to wait before sending requests
-        current_time = datetime.now()
-        time_to_wait = (start_time - current_time).total_seconds()
-
-        if time_to_wait > 0:
-            print(f"Waiting {time_to_wait:.2f} seconds until the specified start time.")
-            time.sleep(time_to_wait)
-
-        # Calculate end time
-        self.end_time = time.time() + args.seconds
-
-    def send(self):
-        # Send requests for the specified duration
-        while time.time() < self.end_time:
-            for _ in range(self.count):
-                response = requests.get(self.url)
-                print(f"Response status code: {response.status_code}")
-            
-            # Sleep for 1 second
-            time.sleep(1)
-
-            # Print a separator line between each second's requests
-            print("=" * 30)
-
-        print("Request sending complete.")
 
 
 def main():
-    pass
+    parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
+    parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
+    parser.add_argument("-c", "--count", required=True, type=int, help="Number of requests per second")
+    parser.add_argument("-t", "--time", required=True, help="Start time in the format '31/8/2023-20:23:36'")
+    parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
+    args = parser.parse_args()
+    
+    Bot = bot(args.url, args.time, args.count, args.seconds)
+    
 
 
 if __name__ == "__main__":
