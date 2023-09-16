@@ -1,7 +1,8 @@
 import argparse
 import requests
-import time
 from datetime import datetime, timedelta
+
+from enum import Enum
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -17,7 +18,9 @@ PASSWORD = getenv("PASSWORD")
 
 LOGIN_URL = getenv("LOGIN_URL")
 
-VISIBLE = False         # if the chrome should be visible, user primary for testing
+class RUN(Enum):                # user primarly for testing
+    VISIBLE = True
+    NOT_VISIBLE = False
     
 class Bot:
     cookies: list[dict[str, str]]
@@ -77,9 +80,9 @@ class Chrome:
     client    
     """
 
-    def __init__(self, invis: bool) -> None:
+    def __init__(self, run: RUN) -> None:
 
-        if invis:
+        if run is RUN.NOT_VISIBLE:
             self.chrome_options = Options().add_argument("--headless")
             if self.chrome_options:
                 self.driver = webdriver.Chrome(options=self.chrome_options)
@@ -125,7 +128,7 @@ def main():
     parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
     args = parser.parse_args()
     
-    google = Chrome(VISIBLE)
+    google = Chrome(RUN.VISIBLE)
     
     google.login(LOGIN_URL, USERNAME, PASSWORD)
     google.send_request(args.url, args.count, args.time, args.seconds)
