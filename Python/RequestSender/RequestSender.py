@@ -19,7 +19,7 @@ PASSWORD = getenv("PASSWORD")
 
 LOGIN_URL = getenv("LOGIN_URL")
 
-class RUN(Enum):                # user primarly for testing
+class RUN(Enum):                # used primarly for testing
     VISIBLE = True
     NOT_VISIBLE = False
 
