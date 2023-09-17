@@ -24,6 +24,7 @@ class RUN(Enum):                # user primarly for testing
     VISIBLE = True
     NOT_VISIBLE = False
 
+
 class Cookie():
     domain: str
     expiry: int
@@ -121,11 +122,6 @@ class Bot:
 
 
 class Chrome:
-    """
-    driver
-    options
-    client    
-    """
 
     def __init__(self, run: RUN) -> None:
 
