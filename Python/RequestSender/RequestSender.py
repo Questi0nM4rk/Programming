@@ -81,7 +81,7 @@ class Cookie():
         )
         
 
-class Bot:
+class Client:
     cookies: list[Cookie]
     
     start_time: datetime
@@ -134,7 +134,7 @@ class Chrome:
             self.chrome_options = None
             self.driver = webdriver.Chrome()
             
-        self.client = Bot()
+        self.client = Client()
         
         
     def login(self, url, username, password) -> None:
