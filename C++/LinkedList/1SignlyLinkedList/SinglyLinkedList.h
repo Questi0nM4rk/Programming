@@ -1,8 +1,11 @@
 #pragma once
 
 //includes
-
-#include "../../basic.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <memory>
 
 //aliases
 template <typename U>
