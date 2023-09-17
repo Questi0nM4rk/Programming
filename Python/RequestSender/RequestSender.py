@@ -114,8 +114,8 @@ class Client:
         while datetime.now() <= self.end_time:
             if self.cookies:
                 for _ in range(count):
-                    #response = requests.get(url, cookies=self.cookies)
-                    print(url)
+                    response = requests.get(url, cookies=self.cookies[0].to_dict())
+                    print(response.status_code)
             
             time.sleep(1)
 
