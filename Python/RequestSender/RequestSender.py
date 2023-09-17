@@ -183,7 +183,7 @@ class Chrome:
         self.client.send_requests(url, time, count, seconds)
         
         
-        
+              
 def main():
     parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
     parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
@@ -201,4 +201,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
