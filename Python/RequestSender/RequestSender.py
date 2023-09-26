@@ -97,9 +97,9 @@ class Client:
         self.cookies = []
         
     
-    def send_requests(self, url, when, count, seconds) -> None:
+    def send_requests(self, url, when: datetime, count, seconds) -> None:
         
-        self.start_time = datetime.strptime(when, "%d/%m/%Y-%H:%M:%S")
+        self.start_time = when
         self.end_time = self.start_time + timedelta(seconds=seconds)
         
         current_time = datetime.now()
@@ -182,31 +182,43 @@ class Chrome:
     
     def send_request(self, url, count, time, seconds) -> None:
         
+        try:
+            when = datetime.strptime(time, "%d/%m/%Y-%H:%M:%S")
+        
+        except:
+            try:
+                current_date = datetime.now().date()
+                hold = datetime.strptime(time, "%H:%M:%S")
+                when = datetime.combine(current_date, hold.time())
+                
+            except:
+                return
+        
         if seconds > 20 or count > 50:
             return
         
-        self.client.send_requests(url, time, count, seconds)
+        self.client.send_requests(url, when, count, seconds)
         
         
               
 def main():
     try:
-        """
+        
         parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
         parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
         parser.add_argument("-c", "--count", required=True, type=int, help="Number of requests per second")
         parser.add_argument("-t", "--time", required=True, help="Start time in the format '31/8/2023-20:23:36'")
         parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
         args = parser.parse_args()
-        """
+        
         google = Chrome(RUN.NOT_VISIBLE)
         
-        current_time = datetime.now() + timedelta(seconds=5)
-        time_string = current_time.strftime("%d/%m/%Y-%H:%M:%S")
+        #current_time = datetime.now() + timedelta(seconds=10)
+        #time_string = current_time.strftime("%H:%M:%S")
         
         google.login(LOGIN_URL, USERNAME, PASSWORD)
-        google.send_request("http://127.0.0.1:5000", 2, time_string, 2)
-        #google.send_request(args.url, args.count, args.time, args.seconds)
+        #google.send_request("http://127.0.0.1:5000", 2, time_string, 2)
+        google.send_request(args.url, args.count, args.time, args.seconds)
         
     except Exception as e:
         print(e)
