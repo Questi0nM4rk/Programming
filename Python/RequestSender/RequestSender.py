@@ -113,8 +113,9 @@ class Client:
         
         while datetime.now() <= self.end_time:
             if self.cookies:
+                cookie = self.cookies[0].to_dict()
                 for _ in range(count):
-                    response = requests.get(url, cookies=self.cookies[0].to_dict())
+                    response = requests.get("http://127.0.0.1:5000/, ")
                     print(response.status_code)
             
             time.sleep(1)
@@ -125,7 +126,8 @@ class Chrome:
     def __init__(self, run: RUN) -> None:
 
         if run is RUN.NOT_VISIBLE:
-            self.chrome_options = Options().add_argument("--headless")
+            self.chrome_options = Options()
+            self.chrome_options.add_argument("--headless")
             if self.chrome_options:
                 self.driver = webdriver.Chrome(options=self.chrome_options)
             
@@ -184,17 +186,27 @@ class Chrome:
         
               
 def main():
-    parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
-    parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
-    parser.add_argument("-c", "--count", required=True, type=int, help="Number of requests per second")
-    parser.add_argument("-t", "--time", required=True, help="Start time in the format '31/8/2023-20:23:36'")
-    parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
-    args = parser.parse_args()
-    
-    google = Chrome(RUN.NOT_VISIBLE)
-    
-    google.login(LOGIN_URL, USERNAME, PASSWORD)
-    google.send_request(args.url, args.count, args.time, args.seconds)
+    try:
+        """
+        parser = argparse.ArgumentParser(description="Send requests for a specified duration starting at a given time")
+        parser.add_argument("-u", "--url", required=True, help="URL to send requests to")
+        parser.add_argument("-c", "--count", required=True, type=int, help="Number of requests per second")
+        parser.add_argument("-t", "--time", required=True, help="Start time in the format '31/8/2023-20:23:36'")
+        parser.add_argument("-s", "--seconds", required=True, type=int, help="Duration in seconds")
+        args = parser.parse_args()
+        """
+        google = Chrome(RUN.NOT_VISIBLE)
+        
+        current_time = datetime.now() + timedelta(seconds=5)
+        time_string = current_time.strftime("%d/%m/%Y-%H:%M:%S")
+        
+        google.login(LOGIN_URL, USERNAME, PASSWORD)
+        google.send_request("http://127.0.0.1:5000", 2, time_string, 2)
+        #google.send_request(args.url, args.count, args.time, args.seconds)
+        
+    except Exception as e:
+        print(e)
+        input()
     
 
 

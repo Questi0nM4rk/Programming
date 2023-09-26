@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, make_response
 from datetime import datetime
 
 
@@ -12,7 +12,11 @@ def getRequest():
     req += 1
     date = datetime.now()
     time = date.strftime("%H:%M:%S")
-    
         
     print(f"{time} - req: {req}")
+    return make_response("OK", 200)
+    
+
+if __name__ == "__main__":
+    app.run()
     
