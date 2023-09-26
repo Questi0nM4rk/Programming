@@ -14,7 +14,7 @@ def getRequest():
     time = date.strftime("%H:%M:%S")
         
     print(f"{time} - req: {req}")
-    return make_response("OK", 200)
+    return make_response("LOL", 418)
     
 
 if __name__ == "__main__":
