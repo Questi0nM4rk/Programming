@@ -1,5 +1,6 @@
 import argparse
 import requests
+import requests.cookies
 from datetime import datetime, timedelta
 import time
 import json
@@ -52,19 +53,23 @@ class Cookie():
         
         return datetime.now() > the_date
     
-    def to_dict(self) -> dict:
-        cookie_dict = {
-            "domain": self.domain,
-            "expiry": self.expiry,
-            "httpOnly": self.httpOnly,
-            "name": self.name,
-            "path": self.path,
-            "sameSite": self.sameSite,
-            "secure": self.secure,
-            "value": self.value
-        }
+    
+    def to_cookiejar(self) -> requests.cookies.RequestsCookieJar:
+        cookie_jar = requests.cookies.RequestsCookieJar()
         
-        return cookie_dict
+        cookie = requests.cookies.create_cookie(
+            domain=self.domain,
+            name=self.name,
+            value=self.value,
+            path=self.path,
+            secure=self.secure,
+            expires=self.expiry
+        )
+        
+        cookie_jar.set_cookie(cookie)
+        
+        return cookie_jar
+    
     
     @classmethod
     def from_dict(cls, cookie_dict: dict) -> "Cookie":
@@ -113,9 +118,8 @@ class Client:
         
         while datetime.now() <= self.end_time:
             if self.cookies:
-                cookie = self.cookies[0].to_dict()
                 for _ in range(count):
-                    response = requests.get("http://127.0.0.1:5000/, ")
+                    response = requests.get(url, cookies=self.cookies[0].to_cookiejar())
                     print(response.status_code)
             
             time.sleep(1)
