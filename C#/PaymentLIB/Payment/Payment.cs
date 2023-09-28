@@ -17,7 +17,7 @@ using static Payment.Data;
 using System.Runtime.InteropServices;
 
 /****************************************************
- * @File: Terminal.cs - Main file of DLL             *
+ * @File: Terminal.cs - Main file of DLL            *
  * @Author: Questi0nM4rk                            *
  * @Date: 01/19/2023                                *
  *                                                  *
