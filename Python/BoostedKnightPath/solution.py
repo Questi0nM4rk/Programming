@@ -1,14 +1,13 @@
 import numpy as np
 
 """
-ChessAnnotation
+Chess annotation
 qK{pos_to1}&{pos_to2}
 
 exml:
     qKc4&e4
 """
 
-BOARD = np.zeros((8, 8))
 SIZE = 8
 MOVES = [
     [2, (1, -1)],
@@ -19,11 +18,14 @@ MOVES = [
 
 
 
-class boosted_knight():
+class BoostedKnight():
     Path: list[str]
+    Board: list[int]
 
-    def __init__(self, from_x, from_y, counter) -> None:
-        BOARD[from_x][from_y] = counter
+    def __init__(self, from_x, from_y, counter, board) -> None:
+        self.Path = []
+        self.Board = board
+        self.Board[from_x][from_y] = counter
 
         self.spawn_knights(from_x, from_y, counter)
 
@@ -57,11 +59,12 @@ class boosted_knight():
         elif x >= SIZE and y < SIZE:
             self.spawn_knights(0, y + 1, counter)
 
+        self.Path.pop()
         return False
 
 
     def new_knight(self, x, y, counter) -> bool:
-        if not (0 <= x < SIZE and 0 <= y < SIZE and BOARD[x][y] == 0):
+        if not (0 <= x < SIZE and 0 <= y < SIZE and self.Board[x][y] == 0):
             return False
         return self.spawn_knights(x, y, counter)
 
@@ -78,7 +81,8 @@ class boosted_knight():
 
 
 def main():
-    b_knight = boosted_knight(0,0,1)
+    board = np.zeros((SIZE, SIZE))
+    b_knight = BoostedKnight(0, 0, 1, board)
 
     if b_knight.Path:
         print("Path found!!!")
