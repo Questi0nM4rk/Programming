@@ -31,6 +31,7 @@ class BoostedKnight():
         self.board = board
         self.board[from_x][from_y] = True
 
+        # for testing, but not necessary as if its possible from one square its possible from all
         for y in range(SIZE):
             for x in range(SIZE):
                 self.spawn_knights(x, y)
