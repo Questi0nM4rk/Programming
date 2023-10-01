@@ -38,7 +38,7 @@ class BoostedKnight():
 
     def spawn_knights(self, x, y) -> bool:
         for move in MOVES:
-            if self.check_board(): # change to board checker
+            if self.check_board():
                 return True
 
             if move[0] == 2 or move[0] == -2:
