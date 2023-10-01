@@ -10,7 +10,7 @@ exml:
 
 #TODO:
 # set number of children
-#
+# if false erase the knights that were placed on board
 #
 
 SIZE = 8
