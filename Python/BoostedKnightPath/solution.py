@@ -49,6 +49,9 @@ class BoostedKnight():
                 if self.new_knight(new_x, new_y1) and self.new_knight(new_x, new_y2):
                     self.write_move(new_x, y1=new_y1, y2=new_y2)
                     return True
+                
+                self.board[new_x][new_y1] = False
+                self.board[new_x][new_y2] = False
 
             else:
                 new_x1 = x + move[0][0]
@@ -59,7 +62,8 @@ class BoostedKnight():
                     self.write_move(x1=new_x1, x2=new_x2, y1=new_y)
                     return True
 
-                self.board
+                self.board[new_x1][new_y] = False
+                self.board[new_x2][new_y] = False
             
             
         self.path.pop()
