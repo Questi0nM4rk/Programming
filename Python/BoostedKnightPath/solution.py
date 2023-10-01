@@ -62,7 +62,7 @@ class BoostedKnight():
         return False
 
     def new_knight(self, x, y, counter) -> bool:
-        if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
+        if 0 > x >= SIZE and 0 > y >= SIZE and self.board[x][y] != 0:
             return False
         return self.spawn_knights(x, y, counter)
 
