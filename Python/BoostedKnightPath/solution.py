@@ -36,10 +36,11 @@ class boosted_knight():
 
             if move[0] == 2 or move[0] == -2:
                 new_x = x + move[0]
-                new_y2 = y + move[1][0]
-                new_y1 = y + move[1][1]
+                new_y1 = y + move[1][0]
+                new_y2 = y + move[1][1]
                 
                 if self.new_knight(new_x, new_y1, counter + 1) and self.new_knight(new_x, new_y2, counter + 1):
+                    self.write_move(new_x, y1=new_y1, y2=new_y2)
                     return True
             else:
                 new_x1 = x + move[0][0]
@@ -47,6 +48,7 @@ class boosted_knight():
                 new_y = y + move[1]
 
                 if self.new_knight(new_x1, new_y, counter + 1) and self.new_knight(new_x2, new_y, counter + 1):
+                    self.write_move(x1=new_x1, x2=new_x2, y1=new_y)
                     return True
 
         if x < SIZE:
