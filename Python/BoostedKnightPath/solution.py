@@ -115,6 +115,7 @@ class BoostedKnight():
         for move in rem:
             move = move[2:]
             _first, _second = move.split("&")
+
             _first_x = int(ord(_first[0]) - ord("a"))
             _first_y = int(_first[1]) - 1
 
