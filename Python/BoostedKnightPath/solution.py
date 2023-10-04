@@ -61,7 +61,7 @@ class BoostedKnight():
                     if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
                         self.board[new_x][new_y1] = False
                         self.board[new_x][new_y2] = False
-                    split += 1
+                        split += 1
 
             else:
                 new_x1 = x + move[0][0]
@@ -75,7 +75,7 @@ class BoostedKnight():
                     if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
                         self.board[new_x1][new_y] = False
                         self.board[new_x2][new_y] = False
-                    split += 1
+                        split += 1
             
         if self.path:
             self.path.pop()
