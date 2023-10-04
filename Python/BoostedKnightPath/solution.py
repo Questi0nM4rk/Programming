@@ -27,7 +27,7 @@ MOVES = [
 
 class BoostedKnight():
     path: list[str]
-    board: list[int]
+    board: list[list[bool]]
 
     def __init__(self, from_x, from_y, board) -> None:
         self.path = []
@@ -61,7 +61,7 @@ class BoostedKnight():
                     if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
                         self.board[new_x][new_y1] = False
                         self.board[new_x][new_y2] = False
-                        split += 1
+                    split += 1
 
             else:
                 new_x1 = x + move[0][0]
@@ -75,7 +75,7 @@ class BoostedKnight():
                     if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
                         self.board[new_x1][new_y] = False
                         self.board[new_x2][new_y] = False
-                        split += 1
+                    split += 1
             
         if self.path:
             self.path.pop()
@@ -101,11 +101,36 @@ class BoostedKnight():
 
         self.path.append(notation)
         
+    def delete_moves(self, x1, y1, x2=None, y2=None):
+        notation = "qK"
+        if x2:
+            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x2) + str(y1+1)
+        elif y2:
+            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x1) + str(y2+1)
+            
+        _from = self.path.index(notation)
+        rem = self.path[:_from]
+        self.path = self.path[:_from]
+        
+        for move in rem:
+            move = move[2:]
+            _first, _second = move.split("&")
+            _first_x = int(ord(_first[0]) - ord("a"))
+            _first_y = int(_first[1]) - 1
+
+            _second_x = ord(_second[0]) - ord("a")
+            _second_y = int(_second[1]) - 1
+            
+            self.board[_first_x][_first_y] = False
+            self.board[_second_x][_second_y] = False
+            
+        
     def check_board(self) -> bool:
         return bool(np.all(self.board == 1))
 
 
 def main():
+    
     board = np.zeros((SIZE, SIZE))
     b_knight = BoostedKnight(0, 0, board)
 
