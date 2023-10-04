@@ -1,4 +1,7 @@
 import numpy as np
+import sys
+
+sys.setrecursionlimit(99999999)
 
 """
 Chess annotation
@@ -13,7 +16,7 @@ exml:
 # if false erase the knights that were placed on board
 #
 
-SIZE = 8
+SIZE = 10
 MOVES = [
     [2, (1, -1)],
     [-2, (1, -1)],
@@ -31,57 +34,68 @@ class BoostedKnight():
         self.board = board
         self.board[from_x][from_y] = True
 
-        # for testing, but not necessary as if its possible from one square its possible from all
-        for y in range(SIZE):
-            for x in range(SIZE):
-                self.spawn_knights(x, y)
+        split = SIZE - 2
+        print(split)
+        input()
+        print(self.spawn_knights(from_x, from_y, split))
 
-    def spawn_knights(self, x, y) -> bool:
+    def spawn_knights(self, x, y, split) -> bool:
+        if self.check_board():
+            return True
+
+        if split <= 0:
+            return False
+
         for move in MOVES:
-            if self.check_board():
-                return True
 
             if move[0] == 2 or move[0] == -2:
                 new_x = x + move[0]
                 new_y1 = y + move[1][0]
                 new_y2 = y + move[1][1]
 
-                if self.new_knight(new_x, new_y1) and self.new_knight(new_x, new_y2):
+                if self.new_knight(new_x, new_y1, split) and self.new_knight(new_x, new_y2, split):
                     self.write_move(new_x, y1=new_y1, y2=new_y2)
                     return True
                 
-                self.board[new_x][new_y1] = False
-                self.board[new_x][new_y2] = False
+                else:
+                    if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
+                        self.board[new_x][new_y1] = False
+                        self.board[new_x][new_y2] = False
+                        split += 1
 
             else:
                 new_x1 = x + move[0][0]
                 new_x2 = x + move[0][1]
                 new_y = y + move[1]
 
-                if self.new_knight(new_x1, new_y) and self.new_knight(new_x2, new_y):
+                if self.new_knight(new_x1, new_y, split) and self.new_knight(new_x2, new_y, split):
                     self.write_move(x1=new_x1, x2=new_x2, y1=new_y)
                     return True
-
-                self.board[new_x1][new_y] = False
-                self.board[new_x2][new_y] = False
+                else:
+                    if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
+                        self.board[new_x1][new_y] = False
+                        self.board[new_x2][new_y] = False
+                        split += 1
             
-            
-        self.path.pop()
+        if self.path:
+            self.path.pop()
         return False
 
-    def new_knight(self, x, y) -> bool:
+    def new_knight(self, x, y, split) -> bool:
         if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
             return False
-        return self.spawn_knights(x, y)
+        split -= 1
+        print(split)
+        return self.spawn_knights(x, y, split)
 
     def write_move(self, x1, y1, x2=None, y2=None):
         notation = "qK"
         if x2:
-            notation += chr(ord("a") + x1) + str(y1) + "&" + chr(ord("a") + x2) + str(y1)
+            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x2) + str(y1+1)
             self.board[x1][y1] = True
             self.board[x2][y1] = True
         elif y2:
-            notation += chr(ord("a") + x1) + str(y1) + "&" + chr(ord("a") + x1) + str(y2)
+            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x1) + str(y2+1)
             self.board[x1][y1] = True
             self.board[x1][y2] = True
 
