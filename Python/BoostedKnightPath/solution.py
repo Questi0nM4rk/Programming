@@ -16,13 +16,37 @@ exml:
 # if false erase the knights that were placed on board
 #
 
-SIZE = 10
-MOVES = [
-    [2, (1, -1)],
-    [-2, (1, -1)],
-    [(1, -1), 2],
-    [(1, -1), -2]
-]
+SIZE = 8
+MOVES_X = [2, 1, -1, -2, -2, -1,  1,  2]
+MOVES_Y = [1, 2,  2,  1, -1, -2, -2, -1]
+
+class NomalKnight():
+    
+    def __init__(self, x, y, board) -> None:
+        self.board = board
+        counter = 2
+        self.board[x,y] = 1
+        print(self.solve(x, y, board, counter))
+        
+    def solve(self, x, y, board, counter):
+        if counter >= 65:
+            return True
+
+        for i in range(8):
+            n_x = x + MOVES_X[i]
+            n_y = y + MOVES_Y[i]
+            if self.validate_move(n_x, n_y):
+                self.board[n_x, n_y] = counter
+                if self.solve(n_x, n_y, board, counter + 1):
+                    return True
+                self.board[n_x, n_y] = 0
+        return False
+    
+    def validate_move(self, x, y):
+        if x < 8 and x >= 0 and y < 8 and y >= 0 and self.board[x, y] == 0:
+            return True
+        return False
+
 
 
 class BoostedKnight():
@@ -34,7 +58,7 @@ class BoostedKnight():
         self.board = board
         self.board[from_x][from_y] = True
 
-        split = SIZE - 2
+        split = SIZE
         print(split)
         input()
         print(self.spawn_knights(from_x, from_y, split))
@@ -46,43 +70,15 @@ class BoostedKnight():
         if split <= 0:
             return False
 
-        for move in MOVES:
-
-            if move[0] == 2 or move[0] == -2:
-                new_x = x + move[0]
-                new_y1 = y + move[1][0]
-                new_y2 = y + move[1][1]
-
-                if self.new_knight(new_x, new_y1, split) and self.new_knight(new_x, new_y2, split):
-                    self.write_move(new_x, y1=new_y1, y2=new_y2)
-                    return True
-                
-                else:
-                    if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
-                        self.board[new_x][new_y1] = False
-                        self.board[new_x][new_y2] = False
-                        split += 1
-
-            else:
-                new_x1 = x + move[0][0]
-                new_x2 = x + move[0][1]
-                new_y = y + move[1]
-
-                if self.new_knight(new_x1, new_y, split) and self.new_knight(new_x2, new_y, split):
-                    self.write_move(x1=new_x1, x2=new_x2, y1=new_y)
-                    return True
-                else:
-                    if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
-                        self.board[new_x1][new_y] = False
-                        self.board[new_x2][new_y] = False
-                        split += 1
-            
-        if self.path:
-            self.path.pop()
+        return False
+    
+    def validate_move(self, x: int, y: int):
+        if x < 8 and x >= 0 and y < 8 and y >= 0 and self.board[x][y] == 0:
+            return True
         return False
 
     def new_knight(self, x, y, split) -> bool:
-        if not (0 <= x < SIZE and 0 <= y < SIZE and self.board[x][y] == 0):
+        if not (0 <= x < SIZE and 0 <= y < SIZE): #and self.board[x][y] == 0):
             return False
         split -= 1
         print(split)
@@ -130,14 +126,40 @@ class BoostedKnight():
         return bool(np.all(self.board == 1))
 
 
+
+def validateMove(bo, row, col):
+    if row < 8 and row >= 0 and col < 8 and col >= 0 and bo[row, col] == 0:
+        return True
+
+def solve (bo, row, col, counter):
+    
+    if counter >= 65:
+        return True
+    for i in range(8):
+        new_x = row + MOVES_X[i]
+        new_y = col + MOVES_Y[i]
+        if validateMove(bo, new_x, new_y):
+            bo[new_x,new_y] = counter
+            if solve(bo,new_x, new_y, counter+1):
+                return True
+            bo[new_x,new_y] = 0
+    return False
+
+
 def main():
     
     board = np.zeros((SIZE, SIZE))
+
+    n_knight = NomalKnight(0,0,board)
+    
+    print(n_knight.board)
+    
+    """
     b_knight = BoostedKnight(0, 0, board)
 
     if b_knight.path:
         print("Path found!!!")
-
+    print(b_knight.board)"""
 
 if __name__ == "__main__":
     main()
