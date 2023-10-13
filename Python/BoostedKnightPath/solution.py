@@ -28,6 +28,9 @@ class NormalKnight():
         
     def solve(self, x, y, split):
 
+        if split <= 0:
+            return True
+        
         if not self.board[x][y]:
             self.board[x][y] = True
 
@@ -53,7 +56,7 @@ class BoostedKnight():
         self.path = []
         
     def solve(self, x, y, split) -> bool:
-        if split == 0:
+        if split <= 0:
             return True
 
         k1 = NormalKnight(self.board).solve(x,y,split)
@@ -105,6 +108,9 @@ def main():
     boostedK.solve(0,0,7)           # x, y, number of splits the knight should make
     
     print(boostedK.board)
+    
+    print(np.sum(boostedK.board == 0))  # writeout the number of empty spots on board, least empty for split = 7
+    
 
 
 if __name__ == "__main__":
