@@ -16,20 +16,22 @@ exml:
 # if false erase the knights that were placed on board
 #
 
-SIZE = 8
+SIZE = 7
 MOVES_X = [2, 1, -1, -2, -2, -1,  1,  2]
 MOVES_Y = [1, 2,  2,  1, -1, -2, -2, -1]
 
 class NomalKnight():
     
-    def __init__(self, x, y, board) -> None:
+    def __init__(self, x, y, board, adds = 0) -> None:
         self.board = board
+        self.last_move = ()
         counter = 2
         self.board[x,y] = 1
-        print(self.solve(x, y, board, counter))
+        print(self.solve(x, y, board, counter, adds))
         
-    def solve(self, x, y, board, counter):
-        if counter >= 65:
+    def solve(self, x, y, board, counter, adds):
+        if counter >= adds:
+            self.last_move = (x,y)
             return True
 
         for i in range(8):
@@ -37,18 +39,18 @@ class NomalKnight():
             n_y = y + MOVES_Y[i]
             if self.validate_move(n_x, n_y):
                 self.board[n_x, n_y] = counter
-                if self.solve(n_x, n_y, board, counter + 1):
+                if self.solve(n_x, n_y, board, counter + 1, adds):
                     return True
                 self.board[n_x, n_y] = 0
         return False
     
     def validate_move(self, x, y):
-        if x < 8 and x >= 0 and y < 8 and y >= 0 and self.board[x, y] == 0:
+        if x < SIZE and x >= 0 and y < SIZE and y >= 0 and self.board[x, y] == 0:
             return True
         return False
 
 
-
+"""
 class BoostedKnight():
     path: list[str]
     board: list[list[bool]]
@@ -125,14 +127,17 @@ class BoostedKnight():
     def check_board(self) -> bool:
         return bool(np.all(self.board == 1))
 
+"""
+class BoostedKnight():
+    def __init__(self, x, y, board) -> None:
+        self.board = board
 
 
 def validateMove(bo, row, col):
-    if row < 8 and row >= 0 and col < 8 and col >= 0 and bo[row, col] == 0:
+    if row < SIZE and row >= 0 and col < SIZE and col >= 0 and bo[row, col] == 0:
         return True
 
 def solve (bo, row, col, counter):
-    
     if counter >= 65:
         return True
     for i in range(8):
@@ -149,10 +154,15 @@ def solve (bo, row, col, counter):
 def main():
     
     board = np.zeros((SIZE, SIZE))
-
+    #solve(board, 0, 0, 1)
+    
     n_knight = NomalKnight(0,0,board)
     
     print(n_knight.board)
+    """x,y = n_knight.last_move
+    n2_knight = NomalKnight(x,y,n_knight.board, 1)
+    
+    print(n2_knight.board)"""
     
     """
     b_knight = BoostedKnight(0, 0, board)
