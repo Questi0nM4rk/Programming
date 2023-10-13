@@ -78,7 +78,7 @@ class BoostedKnight():
         self.path.append(notation)
         
         
-
+"""
 def validateMove(bo, row, col):
     if row < SIZE and row >= 0 and col < SIZE and col >= 0 and bo[row, col] == 0:
         return True
@@ -95,7 +95,7 @@ def solve (bo, row, col, counter):
                 return True
             bo[new_x,new_y] = 0
     return False
-
+"""
 
 def main():
     
@@ -105,6 +105,7 @@ def main():
     boostedK.solve(0,0,7)           # x, y, number of splits the knight should make
     
     print(boostedK.board)
+
 
 if __name__ == "__main__":
     main()
