@@ -16,7 +16,7 @@ exml:
 # if false erase the knights that were placed on board
 #
 
-SIZE = 8
+SIZE = 8        # The size of the board
 MOVES_X = [2, 1, -1, -2, -2, -1,  1,  2]
 MOVES_Y = [1, 2,  2,  1, -1, -2, -2, -1]
 
@@ -99,10 +99,10 @@ def solve (bo, row, col, counter):
 
 def main():
     
-    board = np.zeros((SIZE, SIZE))
+    board = np.zeros((SIZE, SIZE))  # change to board size is done at the top
     
-    boostedK = BoostedKnight(board)
-    boostedK.solve(0,0,19)
+    boostedK = BoostedKnight(board) 
+    boostedK.solve(0,0,7)           # x, y, number of splits the knight should make
     
     print(boostedK.board)
 
