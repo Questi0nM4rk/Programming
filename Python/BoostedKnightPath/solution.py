@@ -16,8 +16,6 @@ SIZE = 8
 MOVES_X = [2 , 1, -1, -2, -2, -1, 1, 2]
 MOVES_Y = [1, 2, 2, 1, -1 , -1, -2, -2, -1]
 
-KNIGHT_MOVES = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
-SPLIT_MOVES = [(a,b) for (a,b) in product(KNIGHT_MOVES, KNIGHT_MOVES) if a != b]
 
 
 class NormalKnight():
@@ -50,6 +48,13 @@ class NormalKnight():
         return False
 
 
+
+
+KNIGHT_MOVES = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
+SPLIT_MOVES = [(a,b) for (a,b) in product(KNIGHT_MOVES, KNIGHT_MOVES) if a != b]
+
+
+
 class BoostedKnight():
     def __init__(self, size) -> None:
         self.board = np.zeros((size, size))
@@ -62,6 +67,7 @@ class BoostedKnight():
             return False
 
         self.board[x][y] = True
+        self.start = (x, y)
         if self._backtracking(1):
             return True
         
@@ -79,7 +85,7 @@ class BoostedKnight():
                 self.board[end1[0], end1[1]] = True
                 self.board[end2[0], end2[1]] = True
                 
-                self._writeMove(end1, end2)
+                self._writeMove(start, end1, end2)
                 
                 if self._backtracking(existingPieces+2):
                     return True
@@ -122,8 +128,8 @@ class BoostedKnight():
         return True
     
     
-    def _writeMove(self, pos1, pos2):
-        notation = "qK"
+    def _writeMove(self, start, pos1, pos2):
+        notation = f"{chr(ord('a') + start[0]) + str(int(start[1])+1)}qK"
         notation += chr(ord("a") + pos1[0]) + str(int(pos2[1])+1) + "&" + chr(ord("a") + pos2[0]) + str(int(pos2[1])+1)
 
         self.path.append(notation)
