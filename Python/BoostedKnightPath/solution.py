@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import product
 import sys
 
 sys.setrecursionlimit(99999999)
@@ -11,14 +12,13 @@ exml:
     qKc4&e4
 """
 
-#TODO:
-# set number of children
-# if false erase the knights that were placed on board
-#
+SIZE = 8
+MOVES_X = [2 , 1, -1, -2, -2, -1, 1, 2]
+MOVES_Y = [1, 2, 2, 1, -1 , -1, -2, -2, -1]
 
-SIZE = 8        # The size of the board
-MOVES_X = [2, 1, -1, -2, -2, -1,  1,  2]
-MOVES_Y = [1, 2,  2,  1, -1, -2, -2, -1]
+KNIGHT_MOVES = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
+SPLIT_MOVES = [(a,b) for (a,b) in product(KNIGHT_MOVES, KNIGHT_MOVES) if a != b]
+
 
 class NormalKnight():
     
@@ -26,9 +26,9 @@ class NormalKnight():
         self.last_move = ()
         self.board = board
         
-    def solve(self, x, y, split):
+    def solve(self, x, y, counter):
 
-        if split <= 0:
+        if counter >= SIZE*SIZE:
             return True
         
         if not self.board[x][y]:
@@ -39,7 +39,7 @@ class NormalKnight():
             n_y = y + MOVES_Y[i]
             if self.validate_move(n_x, n_y):
                 self.board[n_x, n_y] = True
-                if BoostedKnight(self.board).solve(n_x, n_y, split-1):
+                if self.solve(n_x, n_y, counter+1):
                     return True
                 self.board[n_x, n_y] = False
         return False
@@ -51,65 +51,92 @@ class NormalKnight():
 
 
 class BoostedKnight():
-    def __init__(self, board) -> None:
-        self.board = board
+    def __init__(self, size) -> None:
+        self.board = np.zeros((size, size))
         self.path = []
-        
-    def solve(self, x, y, split) -> bool:
-        if split <= 0:
-            return True
+        self.size = size
 
-        k1 = NormalKnight(self.board).solve(x,y,split)
-        k2 = NormalKnight(self.board).solve(x,y,split)
-        
-        if k1 and k2:
-            #self.write_move()
+
+    def solve(self, x, y) -> bool:
+        if self.size % 2 == 0:
+            return False
+
+        self.board[x][y] = True
+        if self._backtracking(1):
             return True
+        
         return False
     
-    def write_move(self, x1, y1, x2=None, y2=None):
+    
+    def _backtracking(self, existingPieces):
+        if existingPieces >= self.size ** 2:
+            return True
+        
+        validMoves = self._getValidMoves()
+
+        for start in validMoves.keys():
+            for (end1, end2) in validMoves[start]:
+                self.board[end1[0], end1[1]] = True
+                self.board[end2[0], end2[1]] = True
+                
+                self._writeMove(end1, end2)
+                
+                if self._backtracking(existingPieces+2):
+                    return True
+                
+                self.path.pop()
+
+                self.board[end1[0], end1[1]] = False
+                self.board[end2[0], end2[1]] = False
+
+        return False
+
+
+    def _getValidMoves(self):
+        res = {}
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.board[i][j]:
+                    moves = self._getChildrenOfPiece(i, j)
+                    if len(moves) > 0:
+                        res[(i, j)] = moves
+        return res
+    
+    
+    def _getChildrenOfPiece(self, i, j):
+        allMoves = [(
+                (x1 + i, y1 + j),
+                (x2 + i, y2 + j)
+            ) for ((x1, y1), (x2, y2)) in SPLIT_MOVES 
+        ]
+        return [(x,y) for (x,y) in allMoves if self._isMoveValid(x, y)]
+    
+    
+    def _isMoveValid(self, newPos1, newPos2):
+        x1, y1 = newPos1
+        x2, y2 = newPos2
+        if min(x1, x2, y1, y2) < 0 or max(x1, x2, y1, y2) >= self.size:
+            return False
+        if self.board[x1][y1] or self.board[x2][y2]:
+            return False
+        return True
+    
+    
+    def _writeMove(self, pos1, pos2):
         notation = "qK"
-        if x2:
-            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x2) + str(y1+1)
-            self.board[x1][y1] = True
-            self.board[x2][y1] = True
-        elif y2:
-            notation += chr(ord("a") + x1) + str(y1+1) + "&" + chr(ord("a") + x1) + str(y2+1)
-            self.board[x1][y1] = True
-            self.board[x1][y2] = True
+        notation += chr(ord("a") + pos1[0]) + str(int(pos2[1])+1) + "&" + chr(ord("a") + pos2[0]) + str(int(pos2[1])+1)
 
         self.path.append(notation)
         
         
-"""
-def validateMove(bo, row, col):
-    if row < SIZE and row >= 0 and col < SIZE and col >= 0 and bo[row, col] == 0:
-        return True
-
-def solve (bo, row, col, counter):
-    if counter >= 65:
-        return True
-    for i in range(8):
-        new_x = row + MOVES_X[i]
-        new_y = col + MOVES_Y[i]
-        if validateMove(bo, new_x, new_y):
-            bo[new_x,new_y] = counter
-            if solve(bo,new_x, new_y, counter+1):
-                return True
-            bo[new_x,new_y] = 0
-    return False
-"""
-
 def main():
+    size = 5
     
-    board = np.zeros((SIZE, SIZE))  # change to board size is done at the top
-    
-    boostedK = BoostedKnight(board) 
-    boostedK.solve(0,0,7)           # x, y, number of splits the knight should make
+    boostedK = BoostedKnight(size) 
+    boostedK.solve(0,0)           # x, y, number of splits the knight should make
     
     print(boostedK.board)
-    
-    print(np.sum(boostedK.board == 0))  # writeout the number of empty spots on board, least empty for split = 7
+    print(boostedK.path)
     
 
 
