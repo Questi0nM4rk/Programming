@@ -139,11 +139,10 @@ def main():
     size = 5
     
     boostedK = BoostedKnight(size) 
-    boostedK.solve(0,0)           # x, y, number of splits the knight should make
+    boostedK.solve(0,0)
     
     print(boostedK.board)
     print(boostedK.path)
-    
 
 
 if __name__ == "__main__":
