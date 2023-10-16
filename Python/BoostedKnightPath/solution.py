@@ -1,6 +1,7 @@
 import numpy as np
 from itertools import product
 import sys
+import time
 
 sys.setrecursionlimit(99999999)
 
@@ -136,13 +137,16 @@ class BoostedKnight():
         
         
 def main():
-    size = 5
+    size = 9
     
+    start_time = time.time()
     boostedK = BoostedKnight(size) 
     boostedK.solve(0,0)
-    
+    end_time = time.time()
+
     print(boostedK.board)
     print(boostedK.path)
+    print(end_time - start_time)
 
 
 if __name__ == "__main__":
