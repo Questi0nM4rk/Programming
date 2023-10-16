@@ -52,7 +52,7 @@ class NormalKnight():
 
 
 KNIGHT_MOVES = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
-SPLIT_MOVES = [(a,b) for (a,b) in product(KNIGHT_MOVES, KNIGHT_MOVES) if a != b]
+SPLIT_MOVES = [(a, b) for a in KNIGHT_MOVES for b in KNIGHT_MOVES if a != b]
 
 
 
