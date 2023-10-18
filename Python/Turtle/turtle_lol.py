@@ -33,23 +33,51 @@ def _draw_clock(side):
     t.penup()
     t.left(90)
     t.forward(side*2)
-    t.right(90)
-    t.backward(side//2)
+    t.right(105)
     t.pendown()
     for _ in range(12):
         t.forward(side)
         t.right(angle)
 
 
-def _draw_clock_arm(angle, length):
+def _draw_clock_arm(angle, side, version):
     t.penup()
     t.goto(0, 0)
-    t.setheading(90 - angle)
-    t.pendown()
-    t.forward(length)
-    t.penup()
-    t.goto(0, 0)
-    t.setheading(90)
+    if version is 0:    # seconds
+        sec_len = 1.8*side
+        t.setheading(90 - angle)
+        t.pendown()
+        t.forward(sec_len)
+    elif version is 1:  # minites
+        min_len = side*1.6
+        min_width = side/20
+        t.setheading(90-angle)
+        t.pendown()
+        t.right(90)
+        t.forward(min_width/2.0)
+        t.left(90)
+        t.forward(min_len)
+        t.left(90)
+        t.forward(min_width)
+        t.left(90)
+        t.forward(min_len)
+        t.left(90)
+        t.forward(min_width/2.0)
+    elif version is 2:  # hours
+        hs_len = side*1.4
+        hs_width = side/10
+        t.setheading(90-angle)
+        t.pendown()
+        t.right(90)
+        t.forward(hs_width/2.0)
+        t.left(90)
+        t.forward(hs_len)
+        t.left(90)
+        t.forward(hs_width)
+        t.left(90)
+        t.forward(hs_len)
+        t.left(90)
+        t.forward(hs_width/2.0)
 
 
 def _calculate_clock_angles():
@@ -68,10 +96,6 @@ def _calculate_clock_angles():
 def clock(epoch_time, side):
     _draw_clock(side)
 
-    t.shape("arrow")
-    t.color("blue")
-    t.speed(0)
-
     t.penup()
     t.right(90)
     t.forward(2*side)
@@ -80,9 +104,9 @@ def clock(epoch_time, side):
 
     hour_angle, minute_angle, second_angle = _calculate_clock_angles()
 
-    _draw_clock_arm(hour_angle, 80)
-    _draw_clock_arm(minute_angle, 120)
-    _draw_clock_arm(second_angle, 140)
+    _draw_clock_arm(hour_angle, side, 2)
+    _draw_clock_arm(minute_angle, side, 1)
+    _draw_clock_arm(second_angle, side, 0)
 
     t.done()
 
