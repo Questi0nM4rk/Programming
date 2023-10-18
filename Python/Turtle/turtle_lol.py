@@ -28,6 +28,13 @@ from datetime import datetime
 # Použití procedur ‹speed›, ‹delay› a ‹done› se sice nepovažuje za chybu,
 # ale budou v testech ignorovány, tj. «nebudou mít žádný efekt».
 
+
+"""
+move it to the ib111
+how to make the clock arms so they are moved from the center
+
+"""
+
 def _draw_clock(side):
     angle = 360//12
     t.penup()
