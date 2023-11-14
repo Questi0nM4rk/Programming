@@ -1,9 +1,6 @@
 import cv2
 import numpy as np
 
-import cv2
-import numpy as np
-
 def encode(image_path, message_path, output_path):
     # Load the images
     image = cv2.imread(image_path)
@@ -44,5 +41,10 @@ def decode(encoded_path, output_path):
     
 
 # Example usage:
-encode('image.png', 'message.png', 'encoded.png')
-decode('encoded.png', 'decoded.png')
+name = 'pOO78Px2z1'
+next = '9rH2U2cm6L'
+
+text = "" + next
+
+encode('image.png', 'message.png', f'{name}.png')
+decode(f'{name}.png', 'decoded.png')

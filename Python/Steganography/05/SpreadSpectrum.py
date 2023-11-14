@@ -3,7 +3,7 @@ import numpy as np
 
 
 def text_to_bits(text):
-    return ''.join(format(ord(char), '08b') for char in text)
+    return ''.join(format(byte, '08b') for byte in text.encode('utf-8'))
 
 
 def encode(image_path, text, output_path):
@@ -47,23 +47,31 @@ def decode(encoded_path):
     # Extract the least significant bit of each pixel
     decoded_bits = (encoded_image & 0b00000001).flatten()
 
-    # Convert the bits to text
-    decoded_text = ''
+    # Convert the bits to bytes
+    decoded_bytes = []
     for i in range(0, len(decoded_bits), 8):
         byte = ''.join(map(str, decoded_bits[i:i+8]))
         if byte == '00000000':
             break
-        decoded_text += chr(int(byte, 2))
+        decoded_bytes.append(int(byte, 2))
+
+    # Convert the bytes to text using 'utf-8'
+    decoded_text = bytearray(decoded_bytes).decode('utf-8')
 
     return decoded_text
 
 
 # Specify the paths to the images
+name = 'Ah3rIZDqZw'
+next = 'uWukiLW032'
+
 image_path = 'image.png'
-encoded_path = 'encoded.png'
+encoded_path = f'{name}.png'
 
 # Specify the text to encode
-text = 'Hello, world!'
+text = 'Vojáci, naše zadní linie byly napadeny Karlíkem a jeho skupinou ze zálohy. Připravte se na ústup a případný odpor. Nepřítel nám způsobil ztráty. Připravte se na taktický ústup a počkejte na další pokyny. Další příkaz bude z důvodu zabezpečení zakódován následujícím způsobem: original image => Alg03 -> image => Alg04(Stejne heslo jako naposledy) -> code to next image => Alg02 -> image with code to next image -> image => Alg05 -> lastCode -> lastImage. Další kód: ' + next
+
+print(len(text.encode('utf-8')))
 
 # Encode the text into the image
 encode(image_path, text, encoded_path)

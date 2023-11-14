@@ -32,5 +32,10 @@ def decode(encoded_path, output_path):
     cv2.imwrite(output_path, decoded)
 
 # Example usage:
-encode('image.png', 'message.png', 'encoded.png')
-decode('image.png', 'decoded.png')
+name = 'iHC438uwRv'
+next = 'pOO78Px2z1'
+
+text = "" + next
+
+encode('image.png', 'message.png', f'{name}.png')
+decode(f'{name}.png', 'decoded.png')
