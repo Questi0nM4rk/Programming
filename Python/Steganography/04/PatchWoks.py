@@ -84,7 +84,7 @@ encoded_path = f'{name}.png'
 
 # Specify the text to encode
 text = 'Vážení vojáci, musíme vás varovat, že máme podezření, že někdo sleduje a čte naše rozkazy. Z tohoto důvodu buďte extrémně opatrní a mějte ostražitý pohled na vaše okolí. Vaše bezpečnost a bezpečnost informací jsou v tomto okamžiku klíčové. Další rozkazy jsou v alg05. Další kód: ' + next
-
+print(len(text.encode('utf-8')))
 # Encode the text into the image
 patchwork_encode(image_path, text, encoded_path, "LosKarlos")
 

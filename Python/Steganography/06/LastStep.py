@@ -6,7 +6,7 @@ import numpy as np
 class Alg01:
 
     @staticmethod
-    def encode(name, image_path, text):
+    def encode(output_name, image_path, text):
         # Load the image
         img = cv2.imread(image_path)
 
@@ -23,7 +23,7 @@ class Alg01:
                 img[x, y, 0] ^= 0x1
 
         # Save the stego image
-        cv2.imwrite(f'{name}', img)
+        cv2.imwrite(f'{output_name}', img)
 
     @staticmethod
     def decode(image_path, text_length):
@@ -284,11 +284,13 @@ lastImage = "v55c9sbOAD.png"
 
 key = "LosKarlos"
 
+
 # The next image
 theNextImage = "Y0urM0mL1k3sM1Lk.png"
 
 # Alg05 image
-lastCode = "v55c9sbOAD"
+lastCode = "Vojáci, je to špatné, dostali jsme totálně na zadek. Karlík a jeho skupina nás přepadli a zničili všechny naše útočné pozice. Konverze na light mode a modernizace jejich zařízení se konat nebude. Bohužel, nám dokázali, že dark mode a Linux jsou prostě lepší. Každý sám za sebe, zavolejte si Uber nebo tak něco. Sbohem. Žádné další rozkazy nebudou. Poslední heslo: v55c9sbOAD"
+print(len(lastCode.encode("utf-8")))
 Alg05.encode("theNextImage.png", lastCode, theNextImage)
 
 # Alg02 image with code to next image
@@ -297,20 +299,16 @@ imageWithCodeToNextImage = "imageWithCodeToNextImage.png"
 Alg02.encode("ImageToUse02On.png", imageWithCodeToNextImage, ImageToUse02On)
 
 # Alg04 code to next image
-codeToNext = "wpwpGGs180noscope"
-imageEncodedInImage = "imageEncodedInImage.png"
-Alg04.encode(imageEncodedInImage, codeToNext, imageEncodedInImage, key)
+codeToNext = "Vojáci, nalézáme se v kritické situaci. Nepřítel pod vedením nebezpečného Karlika zasáhl naše zadní linie ze zálohy a způsobil nám značné ztráty. Zřejmě se jim opravdu nelíbí light mode ani naše iphony. V této chvíli je naší prioritou zajistit taktický ústup a připravit se na další možný odpor. Další kód je podle předchozích instrukcí 02. Kód na další obrázek: wpwpGGs180noscope"
+print(len(codeToNext.encode("utf-8")))
+
+imageInBetween = "ALm0stTh3r3L1ttLe0n3.png"
+codeInBetween = "ALm0stTh3r3L1ttLe0n3"
+Alg04.encode(imageInBetween, codeToNext, imageInBetween, key)
+
+
+ImageEncodedInImage = "ImageEncodedInImage.png" # Image with a code in between
 
 # Original image
 originalImage = "uWukiLW032.png"
-Alg03.encode("originalImage.png", imageEncodedInImage, originalImage)
-
-
-"""
-Needed:
-originalImage.png -
-TheNextImage.png -
-ImageWithCodeToNextImage.png (Black and white with codeToNext2)
-ImageEncodedInImage.png -
-ImageToUse02On.png -
-"""
+Alg03.encode("originalImage.png", ImageEncodedInImage, originalImage)

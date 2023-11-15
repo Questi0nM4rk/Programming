@@ -69,7 +69,7 @@ image_path = 'image.png'
 encoded_path = f'{name}.png'
 
 # Specify the text to encode
-text = 'Vojáci, naše zadní linie byly napadeny Karlíkem a jeho skupinou ze zálohy. Připravte se na ústup a případný odpor. Nepřítel nám způsobil ztráty. Připravte se na taktický ústup a počkejte na další pokyny. Další příkaz bude z důvodu zabezpečení zakódován následujícím způsobem: original image => Alg03 -> image => Alg04(Stejne heslo jako naposledy) -> code to next image => Alg02 -> image with code to next image -> image => Alg05 -> lastCode -> lastImage. Další kód: ' + next
+text = 'Vojáci, naše zadní linie byly napadeny Karlíkem a jeho skupinou ze zálohy. Připravte se na ústup a případný odpor. Nepřítel nám způsobil ztráty. Připravte se na taktický ústup a počkejte na další pokyny. Další příkaz bude z důvodu zabezpečení zakódován následujícím způsobem: original image => Alg03 -> image with code -> image => Alg04(Stejne heslo jako naposledy) -> code to next image => Alg02 -> image with code to next image -> image => Alg05 -> lastCode -> lastImage. Další kód: ' + next
 
 print(len(text.encode('utf-8')))
 
