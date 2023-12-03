@@ -1,6 +1,7 @@
 import numpy as np
 from itertools import product
 import sys
+import time
 
 sys.setrecursionlimit(99999999)
 
@@ -51,7 +52,7 @@ class NormalKnight():
 
 
 KNIGHT_MOVES = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
-SPLIT_MOVES = [(a,b) for (a,b) in product(KNIGHT_MOVES, KNIGHT_MOVES) if a != b]
+SPLIT_MOVES = [(a, b) for a in KNIGHT_MOVES for b in KNIGHT_MOVES if a != b]
 
 
 
@@ -136,13 +137,16 @@ class BoostedKnight():
         
         
 def main():
-    size = 5
+    size = 9
     
+    start_time = time.time()
     boostedK = BoostedKnight(size) 
     boostedK.solve(0,0)
-    
+    end_time = time.time()
+
     print(boostedK.board)
     print(boostedK.path)
+    print(end_time - start_time)
 
 
 if __name__ == "__main__":
