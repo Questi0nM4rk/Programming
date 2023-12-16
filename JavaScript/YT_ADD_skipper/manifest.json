@@ -1,0 +1,26 @@
+{
+    "name": "Random Extension",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "description": "Just some random code that does something with yt, i dont want to use the word add anywhere in case they somehow check...",
+    "author": "QSM",
+    "permissions": ["storage", "activeTab", "tabs"],
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Random Extension"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": [
+                "background.js"
+            ]
+        }
+    ],
+    "host_permissions": [
+        "http://*.youtube.com/"
+    ]
+  }
+  
