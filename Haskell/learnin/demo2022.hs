@@ -97,11 +97,11 @@ createPairs2 :: [b] -> [String]
 createPairs2 xs = zipWith const (replicate (length xs) ":") xs
 
 {-
-replicate 3 ":" = [":", ":", ":"]
-zip [":", ":", ":"] ["A", "B", "C"] = [(":","A"),(":","B"),(":","C")]
-map fst [(":","A"),(":","B"),(":","C")] = fst for each item = [":", ":", ":"]
+  replicate 3 ":" = [":", ":", ":"]
+  zip [":", ":", ":"] ["A", "B", "C"] = [(":","A"),(":","B"),(":","C")]
+  map fst [(":","A"),(":","B"),(":","C")] = fst for each item = [":", ":", ":"]
 
-returns [":", ":", ":"]
+  returns [":", ":", ":"]
 -}
 
 -- 2.
@@ -120,18 +120,18 @@ sumSuffix list = sum (tail list) : sumSuffix (tail list)
 
 -- 3.
 {-
-\y -> (snd y) ((not.fst) y) :: (Bool, Bool -> x) -> x
-snd y :: a -> b - second item is a function
-not.fst :: Bool - by definition not takes only Bool
-y :: (q, e) - because fst and snd are used on tuples
-q :: Bool - as the fst item needs to be Bool for the not
-e :: a -> b - as the second item needs to be a function
-e :: Bool -> b - as the argument is the first alement which is Bool
-y :: (Bool, Bool -> x)
+  \y -> (snd y) ((not.fst) y) :: (Bool, Bool -> x) -> x
+  snd y :: a -> b - second item is a function
+  not.fst :: Bool - by definition not takes only Bool
+  y :: (q, e) - because fst and snd are used on tuples
+  q :: Bool - as the fst item needs to be Bool for the not
+  e :: a -> b - as the second item needs to be a function
+  e :: Bool -> b - as the argument is the first alement which is Bool
+  y :: (Bool, Bool -> x)
 
-lambda \y ... :: (Bool, Bool -> x) -> x - as the only output of the lambda is the output of that function
-exm:
-\y -> fun not(fst y)
+  lambda \y ... :: (Bool, Bool -> x) -> x - as the only output of the lambda is the output of that function
+  exm:
+  \y -> fun not(fst y)
 -}
 
 -- 4.
@@ -172,9 +172,9 @@ kmIT lf nf ILeaf = lf
 kmIT lf nf (INode v x y) = nf v (kmIT lf nf x) (kmIT lf nf y)
 
 {- 
-In the context of sumITree, we use kmIT to sum all the values in an ITree of Ints. 
-We pass 0 as the leaf case value, because the sum of an empty tree is 0. 
-We pass a lambda function (\v x y -> v + x + y) as the node function, which adds the value at the node to the sum of the left and right subtrees.
+  In the context of sumITree, we use kmIT to sum all the values in an ITree of Ints.
+  We pass 0 as the leaf case value, because the sum of an empty tree is 0.
+  We pass a lambda function (\v x y -> v + x + y) as the node function, which adds the value at the node to the sum of the left and right subtrees.
 -}
 
 -- sumITree is a function that takes an ITree of Ints and returns the sum of its values.
@@ -184,3 +184,14 @@ sumITree = kmIT 0 (\v x y -> v + x + y)
 -- 7.
 -- Fing prolog idk cryyy
 
+{-
+Copilot code:
+
+    take(_, 0, []).
+    
+    take([H|T], N, [H|R]) :-
+      N > 0,
+      N1 is N - 1,
+      take(T, N1, R).
+
+-} 
