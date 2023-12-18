@@ -108,10 +108,10 @@ createPairs2 xs = zipWith const (replicate (length xs) ":") xs
 
 -- a)
 sumSuffix2 :: [Int] -> [Int]
-sumSuffix2 list = init( scanr (+) 0 list)
+sumSuffix2 list = tail( scanr (+) 0 list)
 
 sumSuffix3 :: [Int] -> [Int]
-sumSuffix3 = init . foldr (\curr accum -> (curr + head accum) : accum) [0]
+sumSuffix3 = tail . foldr (\curr accum -> (curr + head accum) : accum) [0]
 
 -- b)
 sumSuffix :: [Int] -> [Int]
@@ -121,6 +121,7 @@ sumSuffix list = sum (tail list) : sumSuffix (tail list)
 -- 3.
 {-
   \y -> (snd y) ((not.fst) y) :: (Bool, Bool -> x) -> x
+
   snd y :: a -> b - second item is a function
   not.fst :: Bool - by definition not takes only Bool
   y :: (q, e) - because fst and snd are used on tuples
@@ -140,6 +141,7 @@ data TreTree a = Node (a,a) (TreTree a, TreTree a, TreTree a) | Leaf a
 randomLeaf = Leaf 'a'
 
 -- b)
+type TTI = TreTree Int -- Propably correct
 data TT = NodeChar(Char, Char) (TT, TT, TT) | LeafChar Char
 
 -- c)
