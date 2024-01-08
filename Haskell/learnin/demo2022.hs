@@ -152,11 +152,15 @@ monoLeaf match (Node (_, _) (left, mid, right)) = monoLeaf match left && monoLea
 -- advanced Part
 
 -- 5.
-decodeRLE :: [(Int, Char)] -> IO ()
-decodeRLE [] = return ()
-decodeRLE ((count, char):xs) = do
+decodeRLEre :: [(Int, Char)] -> IO ()
+decodeRLEre [] = return ()
+decodeRLEre ((count, char):xs) = do
     putStr $ replicate count char
-    decodeRLE xs
+    decodeRLEre xs
+
+decodeRLE :: [(Int, Char)] -> IO ()
+decodeRLE = putStrLn . foldl (\acc (count, char) -> acc ++ replicate count char) ""
+
 
 -- 6.
 data ITree a = ILeaf | INode a (ITree a) (ITree a)

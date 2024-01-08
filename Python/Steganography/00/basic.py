@@ -51,12 +51,12 @@ def main():
     next = 'Ns1DI4N5U9'
     
     text = "Ahoj vojáci. Protože se jedná o Vaše první rozkazy, chtěli jsme, abyste tyto informace dostavali jednoduše. Musíte v noci zabrat jeskyni v hoře a rozdělat tam tábor. Následující příkazy budou kódovány pomocí alg01. Hledejte je pod kódem: " + next
+    print(len(text.encode('utf-8')))
     
     # Hide the text
     hide_text(f"{name}.png", 'image.png', text)
 
     # Extract the text
-    print(len(text.encode('utf-8')))
     print(extract_text(f"{name}.png", len(text.encode('utf-8'))))
 
 
