@@ -3,10 +3,6 @@ cpu 8086
 segment	code
 ..start	mov bx, data
 	mov ds, bx
-	;
-	mov bx, stack
-	mov ss, bx
-	mov sp, dno
 	; Init the row counter
 	mov di, 0
 
@@ -19,6 +15,7 @@ read_loop:
 	
 	; si the iterator and count of ' '
 	xor si, si
+	xor bx, bx
 	
 check_space:
 	mov al, [usIn + 2 + si]
@@ -42,6 +39,9 @@ continue:
 	mov bx, usIn
 	add bx, ax		; add the len of the string
 	
+	; dec bx to have the place of the last char
+	dec bx
+	
 	; check for empty line
 	cmp cl, 0
 	je print_no_num
@@ -49,7 +49,7 @@ continue:
 	; inc counter and check if > 99
 	inc di
 	cmp di, 100
-	jne not_100
+	jb not_100
 	mov di, 0
 	
 not_100:
@@ -62,25 +62,89 @@ not_100:
 	add ax, 30h		; convert to ASCII for < 10
 	mov byte [nums], ' '
 	mov byte [nums + 1], al
-	jmp print
+	jmp init_encrypt
 	
 more_equal_10:
 	mov ax, di
-	mov bl, 10
-	div bl
+	mov dl, 10
+	div dl
 	add ax, 3030h
 	xchg ah, al
 	mov byte [nums], ah
 	mov byte [nums + 1], al
+	
+init_encrypt:
+	xor ax, ax
+	mov word [vars + 1], di
+	xor di, di
+	add di, si	; add spaces
+	add di, 2	; include max len, len
+	;
+	mov cx, -1
+	
+encrypt_loop:
+	mov al, [usIn + di]
+	;
+	cmp al, 'A'
+	jb next_char
+	cmp al, 'Z'
+	jbe is_uppercase
+	;
+	cmp al, 'a'
+	jb next_char
+	cmp al, 'z'
+	jbe is_lowercase
+	;
+	jmp next_char
+	
+is_lowercase:
+	add al, cl
+	neg cx
+	;
+	cmp al, 'a'
+	jb add_26
+	;
+	cmp al, 'z'
+	jg sub_26
+	;
+	jmp next_char
 
-print:
+is_uppercase:
+	add al, cl
+	neg cx
+	;
+	cmp al, 'A'
+	jb add_26
+	;
+	cmp al, 'Z'
+	jg sub_26
+	;
+	jmp next_char
+	
+add_26:
+	add al, 26
+	jmp next_char
+sub_26:
+	sub al, 26
+	jmp next_char
+
+next_char:
+	mov [usIn + di], al
+	inc di
+	cmp di, bx
+	jbe encrypt_loop
+	jmp end_enc
+	
+end_enc:
+	mov di, word [vars + 1]
+
+print_with_nums:
 	mov ah, 09h
 	mov dx, nums
 	int 21h
-	;
-	mov cx, -1
 
 print_no_num:
+	inc bx
 	mov byte [bx], 0Dh	; CR
 	inc bx
 	mov byte [bx], 0Ah	; LF
@@ -104,8 +168,9 @@ segment data
 usIn	db 255, ?
 	resb 255
 nums	db ' ', '0', '.', ' ', '$'
-vars 	db 16
+vars 	db 20
 	
 segment stack
 	resb 16
 dno:	db ?
+
