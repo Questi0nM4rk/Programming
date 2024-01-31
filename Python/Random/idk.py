@@ -1,7 +1,5 @@
-a = {1, 2}
-b = [a, a]
-a.add(3)
-b[0] = {4}
-b.pop()
-
-print(a, b)
+print('\n\nSort data? - Y/n')
+input()
+print('Sort it your self!')
+print('Unsorted data size: 26TB')
+print('...\n\n')

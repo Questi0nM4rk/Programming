@@ -57,6 +57,8 @@ okay:
 	mov si, usIn + 2 + 7	; get the pos of las char
 	mov byte [si + 1], 0	; clear possible CR LF
 	mov byte [si + 2], 0
+	
+; ================================= OCT =========
 ; print oct
 	mov ax, 1
 	mov cx, 1
@@ -72,7 +74,7 @@ oct_loop:
 	add dx, ax
 	
 	cmp cx, 4
-	jb contO
+	jb multO
 	
 	mov cx, 1
 	mov ax, 1
@@ -80,24 +82,36 @@ oct_loop:
 	inc si
 	mov byte [si], dl
 	xor dx, dx
+	
+	jmp contO
 
-contO:
+multO:
 	mov ax, cx
 	mov bl, 2
 	mul bl
 	mov cx, ax
-
+	
+contO:
 	dec di
 	cmp di, usIn + 2
 	jge oct_loop
-	
+
+; add two last bits
+	add dl, '0'
+	inc si
+	mov byte [si], dl
+
+; reverse
+	mov dl, byte [si]
+	mov dh, byte [si - 2]
+	mov byte [si], dh
+	mov byte [si - 2], dl
+
 ; add space separator
 	inc si
 	mov byte [si], ' '
 
 ; ============================ hex ================
-
-; print hex
 	mov ax, 1
 	mov cx, 1
 	xor dx, dx
@@ -110,7 +124,7 @@ hex_loop:
 	add dx, ax
 	
 	cmp cx, 8
-	jb contH
+	jb multH
 	
 	mov cx, 1
 	mov ax, 1
@@ -125,29 +139,38 @@ nx:
 	inc si
 	mov byte [si], dl
 	xor dx, dx
+	jmp contH
 
-contH:
+multH:
 	mov ax, cx
 	mov bl, 2
 	mul bl
 	mov cx, ax
 
+contH:
 	dec di
 	cmp di, usIn + 2
 	jge hex_loop
 	
+; reverse
+	mov dl, byte [si]
+	mov dh, byte [si - 1]
+	mov byte [si], dh
+	mov byte [si - 1], dl
+
 ; add space separator
+endH:
 	inc si
 	mov byte [si], ' '
 	
 ; =========================== deka 1 ===============
 
-; print deka1
+; count deka1
 	mov ax, 1
 	mov cx, 1
 	xor dx, dx
 	mov di, usIn + 2 + 7
-deka1_loop:			; rw
+deka1_loop:
 	mov bl, [di]
 	sub bl, '0'
 	mov ax, cx
@@ -161,125 +184,189 @@ deka1_loop:			; rw
 
 	dec di
 	cmp di, usIn + 2
-	jge deka1_loop		; rw
+	jge deka1_loop
 	
-; write to buffer
-	
-	inc si		; inc si to be at place to write
-	cmp dx, 10
-	jge dig2
-	
-	add dl, '0'
-	mov byte [si], dl
+; skip function
 	jmp eD1
-dig2:
-	cmp dx, 100
-	jge dig3
+
+; Parameters:
+;   dx - the number to check
+;   si - the address to save the result
+count_n:
+	push dx
 	
+	; Check the number of digits
+	cmp dx, 10
+	jge two_digits
+
+	; One digit
+	add dl, '0'
+	mov [si], dl
+	jmp end_check
+
+two_digits:
+	cmp dx, 100
+	jge three_digits
+	
+	; Two digits
 	mov ax, dx
 	mov cx, 10
-	div cx
+	div cl
 	add al, '0'
 	mov byte [si], al
 	inc si
 	add ah, '0'
 	mov byte [si], ah
-	jmp eD1
-	
-dig3:
+	jmp end_check
+
+three_digits:
+	; Three digits
 	mov ax, dx
 	mov cx, 100
-	div cx
+	div cl
 	add al, '0'
-	mov byte [si], al
+	mov [si], al
 	inc si
 	mov ax, dx
 	mov cx, 10
-	div cx
+	div cl
 	add al, '0'
-	mov byte [si], al
+	mov [si], al
 	inc si
 	add ah, '0'
-	mov byte [si], ah
-	
-; add space separator
+	mov [si], ah
+    
+end_check:
+	pop dx
+	ret
+
+; write to buffer
 eD1:
+	
+; print deka1
+	inc si
+	call count_n
+	; adds deka1 to buffer
+	
+	; add the ' ' separator
 	inc si
 	mov byte [si], ' '
 	
-; =========================== deka 2 ===============
-
-; print deka2
-	
-	inc si		; inc si to be at place to write
-	
-; check sign
+	; check for deka2 sign
 	cmp byte [usIn + 2], '0'
 	je possitive
 	
+; prints deka2 if negative
+	neg dx
+	inc si
 	mov byte [si], '-'
 	inc si
+	call count_n
+	neg dx
+	jmp ASCII
 	
-	not dx
-	add dx, 1
-
 possitive:
-	cmp dx, 10
-	jge two_dig
+	mov byte [si], ' '
+	inc si
+	call count_n
+	; prints deka2 if possitive
+
+; ====================================== ASCII ===========
+
+ASCII:
+	cmp dx, 'a'
+	jb BCD
+	cmp dx, 'z'
+	jbe is_char
 	
-	add dl, '0'
+	cmp dx, 'A'
+	jb BCD
+	cmp dx, 'Z'
+	jbe is_char
+	
+	jmp BCD
+	
+is_char:
+	inc si
+	mov byte [si], ' '
+	inc si
 	mov byte [si], dl
-	jmp eD2
 	
-two_dig:
-	cmp dx, 100
-	jge three_dig
-	
-	mov ax, dx
-	mov cx, 10
-	div cx
-	add al, '0'
-	mov byte [si], al
-	inc si
-	add ah, '0'
-	mov byte [si], ah
-	jmp eD2
-	
-three_dig:
-	mov ax, dx
-	mov cx, 100
-	div cx
-	add al, '0'
-	mov byte [si], al
-	inc si
-	mov ax, dx
-	mov cx, 10
-	div cx
-	add al, '0'
-	mov byte [si], al
-	inc si
-	add ah, '0'
-	mov byte [si], ah
-	
-; add space separator
-eD2:
+; ===================================== BCD ==============
+
+BCD:
 	inc si
 	mov byte [si], ' '
 	
-ASCII:
+	mov ax, 1
+	mov cx, 1
+	xor dx, dx
+	mov di, usIn + 2 + 7
+bcd_loop:
+	mov bl, [di]
+	sub bl, '0'
+	mov ax, cx
+	mul bl
+	add dx, ax
 	
-BCD:
+	cmp cx, 8
+	jb multB
+	
+	mov cx, 1
+	mov ax, 1
+	cmp dl, 10
+	jge end_rem
+	
+	add dl, '0'
+	inc si
+	mov byte [si], dl
+	xor dx, dx
+	jmp contB
 
+multB:
+	mov ax, cx
+	mov bl, 2
+	mul bl
+	mov cx, ax
 
+contB:
+	dec di
+	cmp di, usIn + 2
+	jge bcd_loop
+
+; reverse
+	mov dl, byte [si]
+	mov dh, byte [si - 1]
+	mov byte [si], dh
+	mov byte [si - 1], dl
+	jmp end
+
+; remove the separating space when bin isnt BCD
+end_rem:
+	cmp byte [si], ' '
+	jne o1
+	
+	dec si
+	jmp end
+
+o1:
+	cmp byte [si - 1], ' '
+	jne o2
+	
+	sub si, 2
+	jmp end
+
+o2:
+	sub si, 3
+	jmp end
+
+end:
 	inc si
 	mov byte [si], '$'
 	mov ah, 09h
 	mov dx, usIn + 2
 	int 21h
 
-	jmp end
-	
-end:
 	mov ah, 09h
 	mov dx, ending
 	int 21h
@@ -294,9 +381,7 @@ usIn	db 255, ?
 error   db 'Chybný vstup', 0Dh, 0Ah, '$'
 ending	db 0Dh, 0Ah, '$'
 
-vars 	resb 24
-
 
 segment stack
-	    resb 16
+	    resb 32
 dno:	db ?
