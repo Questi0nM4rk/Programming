@@ -1,53 +1,36 @@
-count_n PROC
-    push bp
-    mov bp, sp
-    push dx
-    push si
+	
+	mov cl, 0
+	mov al, 01010100b
+					    ; dl 3
+	mov ah, al
+	mov bh, 00000111b
+    shr ah, 0
+	and ah, bh
+	dec dl				; dl 2
+	
+	mov ah, al
+	shr ah, 3
+	and ah, bh
+	dec dl				; dl 1
+	
+	mov ah, al
+	shr ah, 6
+	and ah, bh
+	dec dl				; dl 0
 
-    ; Check the number of digits
-    cmp dx, 10
-    jge two_digits
 
-    ; One digit
-    add dl, '0'
-    mov [si], dl
-    jmp end_check
 
-two_digits:
-    cmp dx, 100
-    jge three_digits
+    ;;
 
-    ; Two digits
-    mov ax, dx
-    mov cx, 10
-    div cl
-    add al, '0'
-    mov [si], al
-    inc si
-    add ah, '0'
-    mov [si], ah
-    jmp end_check
+	
+	cmp ah, 10
+	jge char
 
-three_digits:
-    ; Three digits
-    mov ax, dx
-    mov cx, 100
-    div cl
-    add al, '0'
-    mov [si], al
-    inc si
-    mov ax, dx
-    mov cx, 10
-    div cl
-    add al, '0'
-    mov [si], al
-    inc si
-    add ah, '0'
-    mov [si], ah
+	add ah, '0'
+	jmp ctn
 
-end_check:
-    pop si
-    pop dx
-    pop bp
-    ret 4
-count_n ENDP
+char:
+	add ah, 87
+	mov dh, 0
+
+ctn:
