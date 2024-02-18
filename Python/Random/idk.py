@@ -1,5 +1,34 @@
-print('\n\nSort data? - Y/n')
-input()
-print('Sort it your self!')
-print('Unsorted data size: 26TB')
-print('...\n\n')
+ascii = """
+       000         000
+      0  00       00  0
+     00  000     000  00
+     000   0 000 0   000
+    000000000000000000000
+   00000    00000    00000 
+   000000    0 0    000000
+   00000000000 00000000000
+    000000 0  0  0 000000
+     000000  000  000000   
+       000000000000000
+           0000000
+"""
+
+binary = "01001001001000000110110001101111011101100110010100100000011110010110111101110101001000000111001101101111011011110010000001101101011101010110001101101000"
+
+ascii_list = list(ascii)
+
+i = 0
+b = 0
+while b < len(binary) and i < len(ascii_list):
+        if ascii_list[i] == " " or ascii_list[i] == "\n":
+                i += 1
+                continue
+        ascii_list[i] = binary[b]
+        i += 1
+        b += 1
+
+a = ''.join(ascii_list)
+print(a)
+print(a.replace(" ", "").replace("\n", ""))
+
+
